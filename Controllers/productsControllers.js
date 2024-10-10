@@ -65,10 +65,20 @@ const { readData, writeData} = require('../Services/Read&Write');
             next(error);
         }
         
-    }
-
-
-
+    };
+    const deleteProducts = async (req, res, next)=> {
+        try {
+            const {id}= req.params;
+            const productos = await readData();
+            const index = productos.findIndex(p => p.id === parseInt(id));
+            if (index === -1) return res.status(404).json({message: 'Producto valio verga no lo encuentro'});
+            const deleteProducts = productos.splice(index,1);
+            await writeData(productos);
+            res.json(deleteProducts)
+        } catch (error) {
+            next(error);
+        }
+    };
 
 
 
@@ -76,5 +86,6 @@ module.exports ={
     getProducts,
     getProductsXid,
     postProduct,
-    putProducts
+    putProducts,
+    deleteProducts
 }
