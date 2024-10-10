@@ -42,7 +42,32 @@ const { readData, writeData} = require('../Services/Read&Write');
             next(error);
         }
     };
-    
+    const putProducts = async (req,res,next) => {
+        try {
+           const {id} = req.params;
+           const { name, description, price, quantity} = req.body;
+           const productos = await readData();
+           const index = productos.findIndex(p => p.id === parseInt(id));
+           if (index === -1) return res.status(404).json ({message: 'Producto valio verga no lo encuentro'})
+
+        //Actualiza propiedades enviadas
+        const putProducts = {...productos[index],
+            name,
+            description,
+            price,
+            quantity
+        };
+        productos[index] = putProducts;
+        await writeData(productos);
+        res.json(putProducts);
+         
+        } catch (error) {
+            next(error);
+        }
+        
+    }
+
+
 
 
 
@@ -51,4 +76,5 @@ module.exports ={
     getProducts,
     getProductsXid,
     postProduct,
+    putProducts
 }
